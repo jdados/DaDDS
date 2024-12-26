@@ -81,6 +81,6 @@ module ook_dds(
     assign phase = phase_reg_out[31:24]; 
 
     // OOK logic
-    assign dac = (ook_data == 1'b1) ? lut_out : 10'd0;
+    assign dac = (ook_data == 1'b1) ? lut_out : 8'd128;
 
 endmodule
