@@ -3,7 +3,7 @@ module ook_dds(
     input wire rst,
     input wire rx,
     input wire ook_data,
-    output wire [7:0] dac_in
+    output wire [7:0] dac
 );
     wire [7:0] phase;
     wire [7:0] lut_out;   
@@ -81,6 +81,6 @@ module ook_dds(
     assign phase = phase_reg_out[31:24]; 
 
     // OOK logic
-    assign dac_in = (ook_data == 1'b1) ? lut_out : 10'd0;
+    assign dac = (ook_data == 1'b1) ? lut_out : 10'd0;
 
 endmodule
