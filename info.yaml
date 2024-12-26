@@ -1,5 +1,6 @@
 # Tiny Tapeout project information
 project:
+  wokwi_id:    0
   title:        "OOK DDS"      # Project title
   author:       "Jeremiasz Dados"      # Your name
   discord:      "nmos2002"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
