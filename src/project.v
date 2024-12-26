@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module ook_dds_top_level (
+module tt_um_ook_dds (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
