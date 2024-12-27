@@ -35,7 +35,7 @@ async def test_tt_um_ook_dds(dut):
     dut._log.info("Start")
 
     # Clock generation
-    clock = Clock(dut.clk, CLK_TOGGLE_RATE, units="ns")
+    clock = Clock(dut.clk, 8.3306675, units="ns")
     cocotb.start_soon(clock.start())
 
     # Reset
