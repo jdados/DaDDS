@@ -8,8 +8,8 @@ from cocotb.handle import SimHandleBase
 
 
 BAUD_RATE = 115200
-BIT_TIME_LENGTH = 1_000_000_000.0 / BAUD_RATE 
-CLK_TOGGLE_RATE = 1_000_000_000.0 / 60019200 / 2 
+BIT_TIME_LENGTH = 1000000000.0 / BAUD_RATE 
+CLK_TOGGLE_RATE = 8.33
 
 async def send_uart_frame(dut: SimHandleBase, data: int):
     """Send a single UART frame (start bit, data bits, stop bit)"""
@@ -35,7 +35,7 @@ async def test_tt_um_ook_dds(dut):
     dut._log.info("Start")
 
     # Clock generation
-    clock = Clock(dut.clk, 8.3306675, units="ns")
+    clock = Clock(dut.clk, CLK_TOGGLE_RATE, units="ns")
     cocotb.start_soon(clock.start())
 
     # Reset
