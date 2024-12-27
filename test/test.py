@@ -6,9 +6,7 @@ from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles
 from cocotb.handle import SimHandleBase
 
-
-BAUD_RATE = 115200
-BIT_TIME_LENGTH = 1000000000.0 / BAUD_RATE 
+BIT_TIME_LENGTH = 8680.56
 CLK_TOGGLE_RATE = 8.33
 
 async def send_uart_frame(dut: SimHandleBase, data: int):
