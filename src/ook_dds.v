@@ -50,7 +50,7 @@ module ook_dds(
     wire [31:0] sig_freq_reg_out;
 
     // Component instantiations
-    uart_rx uart_rx_instance (
+    uart_rx uart (
         .clk(clk),                  
         .rx(rx),                   
         .rst(rst),                 

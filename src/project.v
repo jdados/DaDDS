@@ -27,7 +27,8 @@ module tt_um_ook_dds (
     .rst(!rst_n),
     .rx(ui_in[3]),
     .ook_data(ui_in[6]),
-    .dac(uo_out[7:0])
+    .dac(uo_out)
   );
 
 endmodule
+
