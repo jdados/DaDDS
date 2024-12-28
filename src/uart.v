@@ -39,6 +39,7 @@ module uart_rx (
       byte_number_reg <= 0;
       tx_sig_freq_reg <= 0;
       done_reg <= 0;
+
     end else begin
       case (state_reg)
         idle: begin
@@ -56,6 +57,7 @@ module uart_rx (
           if (clk_count_reg == (clk_cycles_per_bit - 1) / 2) begin
             if (rx_data_reg == 1'b0) begin
               clk_count_reg <= 0;
+              bit_index_reg <= 0;
               state_reg <= data_bits;
             end else
               state_reg <= idle;
@@ -69,9 +71,9 @@ module uart_rx (
           end else begin
             clk_count_reg <= 0;
             // Shift in received bit into the appropriate position
-            tx_sig_freq_reg[((3-byte_number_reg) * 8) + (7 - bit_index_reg)] <= rx_data_reg;
+            tx_sig_freq_reg[((3-byte_number_reg) * 8) + (8 - bit_index_reg)] <= rx_data_reg;
 
-            if (bit_index_reg < 7) begin
+            if (bit_index_reg < 8) begin
               bit_index_reg <= bit_index_reg + 1;
             end else begin
               bit_index_reg <= 0;
@@ -85,6 +87,7 @@ module uart_rx (
             clk_count_reg <= clk_count_reg + 1;
           end else begin
             clk_count_reg <= 0;
+            bit_index_reg <= 0;
             if (byte_number_reg == 2'd3) begin
               done_reg <= 1'b1;
               state_reg <= complete;
