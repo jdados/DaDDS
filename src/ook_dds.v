@@ -21,9 +21,6 @@ module ook_dds(
     );
 
     sum32 adder (
-        .clk(clk),
-        .en(1'b1),
-        .rst(rst),
         .a(sig_freq_reg_out),
         .b(phase_reg_out),
         .sum(adder_out)
