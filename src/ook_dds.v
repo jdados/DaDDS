@@ -6,9 +6,9 @@ module ook_dds(
     output wire [7:0] dac
 );
 
-    wire [31:0] adder_out;
-    wire [31:0] sig_freq_reg_out;
-    wire [31:0] phase_reg_out;
+    wire [15:0] adder_out;
+    wire [15:0] sig_freq_reg_out;
+    wire [15:0] phase_reg_out;
 
     uart_rx uart (
         .clk(clk),                  
@@ -20,13 +20,13 @@ module ook_dds(
         .state()                   
     );
 
-    sum32 adder (
-        .a(sig_freq_reg_out),
+    sum16 adder (
+        .a(16'h39D2),
         .b(phase_reg_out),
         .sum(adder_out)
     );
 
-    reg32 phase_reg (
+    reg16 phase_reg (
         .clk(clk),
         .en(1'b1),
         .rst(rst),
@@ -38,7 +38,6 @@ module ook_dds(
     wire [7:0] lut_out;   
     wire [7:0] sine [63:0];
 
-    // Assign the provided 128 values to the LUT
     assign sine[0] = 8'h7F; assign sine[1] = 8'h82; assign sine[2] = 8'h85;
     assign sine[3] = 8'h88; assign sine[4] = 8'h8B; assign sine[5] = 8'h8F;
     assign sine[6] = 8'h92; assign sine[7] = 8'h95; assign sine[8] = 8'h98;
@@ -62,22 +61,19 @@ module ook_dds(
     assign sine[60] = 8'hFD; assign sine[61] = 8'hFE; assign sine[62] = 8'hFE;
     assign sine[63] = 8'hFE;
 
-    assign phase = phase_reg_out[31:24]; 
+    assign phase = phase_reg_out[15:8]; 
 
-    // Calculate phase_index based on phase
     wire [5:0] phase_index; 
     assign phase_index = (phase < 8'd64) ? phase[5:0] :
                          (phase < 8'd128) ? 6'd63 - phase[5:0] :  
                          (phase < 8'd192) ? phase[5:0]:   
                          6'd63 - phase[5:0];  
 
-    //LUT indexing
     assign lut_out = (phase < 8'd64) ? sine[phase_index] : 
                      (phase < 8'd128) ? sine[phase_index] :  
                      (phase < 8'd192) ? 8'd255 - sine[phase_index] : 
                      8'd255 - sine[phase_index];  
 
-    // OOK logic
     assign dac = (ook_data == 1'b1) ? lut_out : 8'd128;
 
 endmodule
