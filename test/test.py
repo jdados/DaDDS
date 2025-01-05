@@ -9,12 +9,18 @@ from cocotb.handle import SimHandleBase
 BIT_TIME_LENGTH = 8680.56
 CLK_TOGGLE_RATE = 8.33
 
-async def send_uart_frame(dut: SimHandleBase, data: int):
+async def send_uart_frame(dut: SimHandleBase, data: int, byte_num: int):
     """Send a single UART frame (start bit, data bits, stop bit)"""
     dut.ui_in.value = dut.ui_in.value & ~0x08  
 
     # Send start bit (0)
     dut.ui_in.value = dut.ui_in.value & ~0x08
+    await cocotb.triggers.Timer(BIT_TIME_LENGTH, units="ns")
+
+    if byte_num == 1:
+        dut.ui_in.value = 0x08
+    else:
+        dut.ui_in.value = 0x00
     await cocotb.triggers.Timer(BIT_TIME_LENGTH, units="ns")
 
     # Send data bits (LSB first)
@@ -47,13 +53,9 @@ async def test_tt_um_ook_dds(dut):
     dut._log.info("Send UART frames to configure frequency")
 
     # Send the frequency register contents in 4 commands
-    await send_uart_frame(dut, 0x08)
+    await send_uart_frame(dut, 0x39, 0x1)
     await ClockCycles(dut.clk, 4)
-    await send_uart_frame(dut, 0xFF)
-    await ClockCycles(dut.clk, 4)
-    await send_uart_frame(dut, 0xFF)
-    await ClockCycles(dut.clk, 4)
-    await send_uart_frame(dut, 0xFF)
+    await send_uart_frame(dut, 0xD2, 0x0)
     await ClockCycles(dut.clk, 4)
 
     # Test OOK
