@@ -2,11 +2,13 @@ module ook_dds(
     input wire clk,
     input wire rst,
     input wire rx,
-    input wire ook_data,
+    input wire rf_data,
+    input wire freq_sel,
     output wire [7:0] dac
 );
-
     wire [15:0] adder_out;
+    wire [15:0] freq0_reg_out;
+    wire [15:0] freq1_reg_out;
     wire [15:0] sig_freq_reg_out;
     wire [15:0] phase_reg_out;
 
@@ -14,14 +16,18 @@ module ook_dds(
         .clk(clk),                  
         .rx(rx),                   
         .rst(rst),                 
-        .done(),                   
-        .tx_sig_freq(sig_freq_reg_out), 
-        .byte_num(),                
-        .state()                   
+        .done(), 
+        .freq_sel(freq_sel),
+        .rf_data(rf_data),                
+        .freq0(freq0_reg_out),
+        .freq1(freq1_reg_out)                  
     );
 
+    // Frequency switching for FSK
+    assign sig_freq_reg_out = (rf_data == 0) ? freq0_reg_out : freq1_reg_out;
+
     sum16 adder (
-        .a(16'h39D2),
+        .a(sig_freq_reg_out),
         .b(phase_reg_out),
         .sum(adder_out)
     );
@@ -74,6 +80,7 @@ module ook_dds(
                      (phase < 8'd192) ? 8'd255 - sine[phase_index] : 
                      8'd255 - sine[phase_index];  
 
-    assign dac = (ook_data == 1'b1) ? lut_out : 8'd128;
+    //if the second register wasn't programmed, switch to OOK.
+    assign dac = (freq1_reg_out == 0) ? 8'd128 : lut_out; 
 
 endmodule

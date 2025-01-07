@@ -20,15 +20,15 @@ module tt_um_ook_dds (
   assign uio_out [7:0] = 0;
   assign uio_oe [7:0] = 8'hFF;
   // List all unused inputs to prevent warnings
-  wire _unused = &{ena, ui_in[2:0], ui_in[5:4], ui_in[7], uio_in[7:0], 1'b0};
+  wire _unused = &{ena, ui_in[2:0], ui_in[7:6], uio_in[7:0], 1'b0};
   
   ook_dds top_level(
     .clk(clk),
     .rst(!rst_n),
     .rx(ui_in[3]),
-    .ook_data(ui_in[6]),
+    .freq_sel(ui_in[4]),
+    .rf_data(ui_in[5]),
     .dac(uo_out)
   );
 
 endmodule
-

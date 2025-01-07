@@ -2,10 +2,11 @@ module uart_rx (
     input wire clk,
     input wire rx,
     input wire rst,
+    input wire freq_sel,
+    input wire rf_data,
     output wire done,
-    output wire [15:0] tx_sig_freq,
-    output wire byte_num,
-    output wire [2:0] state
+    output wire [15:0] freq0,
+    output wire [15:0] freq1
   );
 
   parameter idle = 3'b000;
@@ -16,15 +17,17 @@ module uart_rx (
   parameter complete  = 3'b101;
 
   reg rx_data_reg = 1'b1;
-
   reg [11:0] clk_count_reg = 0;
   reg [3:0] bit_index_reg = 0; 
-  reg [15:0] tx_sig_freq_reg = 0;
   reg byte_number = 0;
   reg done_reg = 0;
   reg [2:0] state_reg = 0;
 
   integer clk_cycles_per_bit = 521; // Clock cycles per UART bit (115200 baud rate)
+
+  // Output registers
+  reg [15:0] freq0_reg = 0;
+  reg [15:0] freq1_reg = 0;
 
   always @(posedge clk) begin
     rx_data_reg <= rx;
@@ -35,7 +38,6 @@ module uart_rx (
       state_reg <= idle;
       clk_count_reg <= 0;
       bit_index_reg <= 0;
-      tx_sig_freq_reg <= 0;
       done_reg <= 0;
       byte_number <= 0;
     end else begin
@@ -78,11 +80,19 @@ module uart_rx (
               clk_count_reg <= clk_count_reg + 1;
           end else begin
               clk_count_reg <= 0;
-              
+
               if (byte_number == 1'b1) begin
-                  tx_sig_freq_reg[8 + bit_index_reg] <= rx_data_reg; 
+                  if (freq_sel == 1'b0) begin
+                    freq0_reg[8 + bit_index_reg] <= rx_data_reg; 
+                  end else begin
+                    freq1_reg[8 + bit_index_reg] <= rx_data_reg; 
+                  end
               end else begin
-                  tx_sig_freq_reg[bit_index_reg] <= rx_data_reg;
+                  if (freq_sel == 1'b0) begin
+                    freq0_reg[bit_index_reg] <= rx_data_reg; 
+                  end else begin
+                    freq1_reg[bit_index_reg] <= rx_data_reg; 
+                  end
               end
 
               if (bit_index_reg < 7) begin
@@ -116,7 +126,6 @@ module uart_rx (
   end
 
   assign done = done_reg;
-  assign tx_sig_freq = tx_sig_freq_reg;
-  assign state = state_reg;
-  assign byte_num = byte_number;
+  assign freq0 = freq0_reg;
+  assign freq1 = freq1_reg;
 endmodule
