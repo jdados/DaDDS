@@ -3,7 +3,6 @@ module uart_rx (
     input wire rx,
     input wire rst,
     input wire freq_sel,
-    input wire rf_data,
     output wire done,
     output wire [15:0] freq0,
     output wire [15:0] freq1
@@ -16,18 +15,19 @@ module uart_rx (
   parameter stop_bit  = 3'b100;
   parameter complete  = 3'b101;
 
-  reg rx_data_reg = 1'b1;
-  reg [11:0] clk_count_reg = 0;
-  reg [3:0] bit_index_reg = 0; 
-  reg byte_number = 0;
-  reg done_reg = 0;
-  reg [2:0] state_reg = 0;
-
-  integer clk_cycles_per_bit = 521; // Clock cycles per UART bit (115200 baud rate)
+  reg rx_data_reg;
+  reg [11:0] clk_count_reg;
+  reg [3:0] bit_index_reg; 
+  reg byte_number;
+  reg done_reg;
+  reg [2:0] state_reg;
+  
+  // Clock cycles per UART bit (115200 baud rate)
+  integer clk_cycles_per_bit = 521; 
 
   // Output registers
-  reg [15:0] freq0_reg = 0;
-  reg [15:0] freq1_reg = 0;
+  reg [15:0] freq0_reg;
+  reg [15:0] freq1_reg;
 
   always @(posedge clk) begin
     rx_data_reg <= rx;
@@ -35,11 +35,14 @@ module uart_rx (
 
   always @(posedge clk or posedge rst) begin
     if (rst) begin
+      rx_data_reg <= 1'b1;
       state_reg <= idle;
       clk_count_reg <= 0;
       bit_index_reg <= 0;
       done_reg <= 0;
       byte_number <= 0;
+      freq0_reg <= 0;
+      freq1_reg <= 0;
     end else begin
       case (state_reg)
         idle: begin
