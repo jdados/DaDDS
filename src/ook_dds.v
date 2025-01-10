@@ -17,8 +17,7 @@ module ook_dds(
         .rx(rx),                   
         .rst(rst),                 
         .done(), 
-        .freq_sel(freq_sel),
-        .rf_data(rf_data),                
+        .freq_sel(freq_sel),              
         .freq0(freq0_reg_out),
         .freq1(freq1_reg_out)                  
     );
@@ -81,6 +80,6 @@ module ook_dds(
                      8'd255 - sine[phase_index];  
 
     //if the second register wasn't programmed, switch to OOK.
-    assign dac = (freq1_reg_out == 0) ? 8'd128 : lut_out; 
+    assign dac = ((freq1_reg_out == 0) && (rf_data == 0)) ? 8'd128 : lut_out; 
 
 endmodule
