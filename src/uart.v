@@ -35,6 +35,7 @@ module uart_rx (
 
   always @(posedge clk or posedge rst) begin
     if (rst) begin
+      /*
       rx_data_reg <= 1'b1;
       state_reg <= idle;
       clk_count_reg <= 0;
@@ -43,6 +44,7 @@ module uart_rx (
       byte_number <= 0;
       freq0_reg <= 0;
       freq1_reg <= 0;
+      */
     end else begin
       case (state_reg)
         idle: begin
