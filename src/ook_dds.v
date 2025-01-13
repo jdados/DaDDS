@@ -81,5 +81,5 @@ module DaDDS(
 
     //if the second register wasn't programmed, switch to OOK.
     assign dac = ((freq1_reg_out == 0) && (rf_data == 0)) ? 8'd128 : lut_out; 
-
+    
 endmodule
