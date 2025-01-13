@@ -1,4 +1,4 @@
-module ook_dds(
+module DaDDS(
     input wire clk,
     input wire rst,
     input wire rx,

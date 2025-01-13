@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module tt_um_ook_dds (
+module tt_um_DaDDS (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -22,7 +22,7 @@ module tt_um_ook_dds (
   // List all unused inputs to prevent warnings
   wire _unused = &{ena, ui_in[2:0], ui_in[7:6], uio_in[7:0], 1'b0};
   
-  ook_dds top_level(
+  DaDDS top_level(
     .clk(clk),
     .rst(!rst_n),
     .rx(ui_in[3]),
