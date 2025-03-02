@@ -16,7 +16,6 @@ module DaDDS(
         .clk(clk),                  
         .rx(rx),                   
         .rst(rst),                 
-        .done(), 
         .freq_sel(freq_sel),              
         .freq0(freq0_reg_out),
         .freq1(freq1_reg_out)                  

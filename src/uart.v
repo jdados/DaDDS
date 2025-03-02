@@ -3,7 +3,6 @@ module uart_rx (
     input wire rx,
     input wire rst,
     input wire freq_sel,
-    output wire done,
     output wire [15:0] freq0,
     output wire [15:0] freq1
   );
