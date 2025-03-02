@@ -18,7 +18,6 @@ module uart_rx (
   reg [11:0] clk_count_reg;
   reg [3:0] bit_index_reg; 
   reg byte_number;
-  reg done_reg;
   reg [2:0] state_reg;
   
   // Clock cycles per UART bit (115200 baud rate)
@@ -37,14 +36,12 @@ module uart_rx (
       state_reg <= idle;
       clk_count_reg <= 0;
       bit_index_reg <= 0;
-      done_reg <= 0;
       byte_number <= 0;
       freq0_reg <= 0;
       freq1_reg <= 0;
     end else begin
       case (state_reg)
         idle: begin
-          done_reg <= 1'b0;
           clk_count_reg <= 0;
           bit_index_reg <= 0;
 
@@ -111,14 +108,12 @@ module uart_rx (
           end else begin
             clk_count_reg <= 0;
             bit_index_reg <= 0;
-            done_reg <= 1'b1;
             state_reg <= complete;
           end
         end
 
         complete: begin
           state_reg <= idle;
-          done_reg <= 1'b0;
         end
 
         default: state_reg <= idle;
@@ -126,7 +121,6 @@ module uart_rx (
     end
   end
 
-  assign done = done_reg;
   assign freq0 = freq0_reg;
   assign freq1 = freq1_reg;
 endmodule
